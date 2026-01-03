@@ -4,3 +4,8 @@
   "description": "Notes API from project 21, productionized: PostgreSQL, Docker, nginx, CI and an EC2 deploy",
   "type": "module",
   "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
