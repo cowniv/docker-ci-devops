@@ -7,3 +7,5 @@ data
 deploy
 test
 nginx
+*.md
+docker-compose.yml
