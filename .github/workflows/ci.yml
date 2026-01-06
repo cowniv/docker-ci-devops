@@ -34,3 +34,15 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - name: Tests (in-memory store)
+        run: TEST_DATABASE_URL= npm test
+      - name: Tests (PostgreSQL service container)
+        run: npm test
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
