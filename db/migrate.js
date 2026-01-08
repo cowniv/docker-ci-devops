@@ -38,3 +38,13 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     process.exit(1);
   }
   const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
+  try {
+    await client.connect();
+    await migrate(client);
+  } catch (err) {
+    console.error(err.message);
+    process.exitCode = 1;
+  } finally {
+    await client.end();
+  }
+}
