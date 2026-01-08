@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS notes (
+  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title       varchar(120) NOT NULL,
+  content     text NOT NULL DEFAULT '',
+  tags        text[] NOT NULL DEFAULT '{}',
+  pinned      boolean NOT NULL DEFAULT false,
