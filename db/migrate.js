@@ -28,3 +28,13 @@ export async function migrate(client, log = console.log) {
       await client.query("ROLLBACK");
       throw new Error(`Migration ${file} failed: ${err.message}`);
     }
+  }
+}
+
+// Run directly: `npm run migrate`
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  if (!process.env.DATABASE_URL) {
+    console.error("DATABASE_URL is not set");
+    process.exit(1);
+  }
+  const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
