@@ -4,3 +4,6 @@ CREATE TABLE IF NOT EXISTS notes (
   content     text NOT NULL DEFAULT '',
   tags        text[] NOT NULL DEFAULT '{}',
   pinned      boolean NOT NULL DEFAULT false,
+  created_at  timestamptz NOT NULL DEFAULT now(),
+  updated_at  timestamptz NOT NULL DEFAULT now()
+);
