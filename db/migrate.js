@@ -18,3 +18,13 @@ export async function migrate(client, log = console.log) {
   for (const file of files) {
     if (done.has(file)) continue;
     const sql = await readFile(dir + file, "utf8");
+    await client.query("BEGIN");
+    try {
+      await client.query(sql);
+      await client.query("INSERT INTO schema_migrations (name) VALUES ($1)", [file]);
+      await client.query("COMMIT");
+      log(JSON.stringify({ level: "info", msg: "migration applied", file }));
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw new Error(`Migration ${file} failed: ${err.message}`);
+    }
