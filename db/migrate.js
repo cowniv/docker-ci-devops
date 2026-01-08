@@ -8,3 +8,13 @@ const dir = fileURLToPath(new URL("./migrations/", import.meta.url));
 
 export async function migrate(client, log = console.log) {
   await client.query(`CREATE TABLE IF NOT EXISTS schema_migrations (
+    name text PRIMARY KEY,
+    applied_at timestamptz NOT NULL DEFAULT now()
+  )`);
+  const { rows } = await client.query("SELECT name FROM schema_migrations");
+  const done = new Set(rows.map((r) => r.name));
+
+  const files = (await readdir(dir)).filter((f) => f.endsWith(".sql")).sort();
+  for (const file of files) {
+    if (done.has(file)) continue;
+    const sql = await readFile(dir + file, "utf8");
