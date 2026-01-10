@@ -7,3 +7,6 @@ CREATE TABLE IF NOT EXISTS notes (
   created_at  timestamptz NOT NULL DEFAULT now(),
   updated_at  timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE INDEX IF NOT EXISTS notes_tags_idx ON notes USING gin (tags);
+CREATE INDEX IF NOT EXISTS notes_updated_at_idx ON notes (updated_at DESC);
