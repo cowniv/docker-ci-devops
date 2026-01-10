@@ -19,3 +19,23 @@ provider "aws" {
 }
 
 variable "region" {
+  type    = string
+  default = "ap-southeast-1" # Singapore, closest to Manila
+}
+
+variable "key_name" {
+  description = "Name of an existing EC2 key pair for SSH"
+  type        = string
+}
+
+variable "ssh_cidr" {
+  description = "Your own IP in CIDR form, e.g. 203.0.113.10/32. Never 0.0.0.0/0."
+  type        = string
+}
+
+# latest Amazon Linux 2023 AMI, looked up instead of hard-coding an ID
+data "aws_ami" "al2023" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
