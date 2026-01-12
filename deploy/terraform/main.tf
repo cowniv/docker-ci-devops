@@ -80,3 +80,23 @@ resource "aws_instance" "notes_api" {
   vpc_security_group_ids = [aws_security_group.notes_api.id]
   user_data              = file("${path.module}/../user-data.sh")
 
+  root_block_device {
+    volume_size = 16
+    volume_type = "gp3"
+    encrypted   = true
+  }
+
+  metadata_options {
+    http_tokens = "required" # IMDSv2 only
+  }
+
+  tags = { Name = "notes-api", Project = "notes-api" }
+}
+
+output "public_ip" {
+  value = aws_instance.notes_api.public_ip
+}
+
+output "health_url" {
+  value = "http://${aws_instance.notes_api.public_dns}/health"
+}
