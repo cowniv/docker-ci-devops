@@ -60,3 +60,23 @@ resource "aws_security_group" "notes_api" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
+    cidr_blocks = [var.ssh_cidr]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = { Project = "notes-api" }
+}
+
+resource "aws_instance" "notes_api" {
+  ami                    = data.aws_ami.al2023.id
+  instance_type          = "t3.micro"
+  key_name               = var.key_name
+  vpc_security_group_ids = [aws_security_group.notes_api.id]
+  user_data              = file("${path.module}/../user-data.sh")
+
