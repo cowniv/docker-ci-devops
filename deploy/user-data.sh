@@ -9,3 +9,14 @@
 #   4. starts db + migrate + api + nginx with docker compose
 #
 # Logs: /var/log/user-data.log  (and `sudo cloud-init status`)
+#
+# Placeholders to change before using:
+#   REPO_URL - your own fork of this project
+set -euo pipefail
+exec > >(tee /var/log/user-data.log) 2>&1
+
+REPO_URL="https://github.com/YOUR_GITHUB_USER/24-docker-ci-devops.git"
+APP_DIR="/opt/notes-api"
+COMPOSE_VERSION="v2.29.7"
+
+echo "==> Installing Docker and git"
