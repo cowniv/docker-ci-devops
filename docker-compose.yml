@@ -24,3 +24,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks: [backend]
+
+  api:
+    build: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      STORE_DRIVER: postgres
+      DATABASE_URL: postgres://${POSTGRES_USER:-notes}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-notes}
+    depends_on:
+      db:
