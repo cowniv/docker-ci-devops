@@ -11,3 +11,16 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [backend]
+
+  # one-shot container that applies SQL migrations, then exits
+  migrate:
+    build: .
+    command: ["node", "db/migrate.js"]
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-notes}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-notes}
+    depends_on:
+      db:
+        condition: service_healthy
