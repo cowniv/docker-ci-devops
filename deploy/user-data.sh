@@ -20,3 +20,13 @@ APP_DIR="/opt/notes-api"
 COMPOSE_VERSION="v2.29.7"
 
 echo "==> Installing Docker and git"
+dnf update -y
+dnf install -y docker git
+systemctl enable --now docker
+usermod -aG docker ec2-user
+
+echo "==> Installing docker compose plugin"
+mkdir -p /usr/local/lib/docker/cli-plugins
+curl -fsSL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-x86_64" \
+  -o /usr/local/lib/docker/cli-plugins/docker-compose
+chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
