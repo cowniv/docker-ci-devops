@@ -30,3 +30,14 @@ mkdir -p /usr/local/lib/docker/cli-plugins
 curl -fsSL "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-x86_64" \
   -o /usr/local/lib/docker/cli-plugins/docker-compose
 chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+echo "==> Fetching the app"
+git clone --depth 1 "$REPO_URL" "$APP_DIR"
+cd "$APP_DIR"
+
+echo "==> Writing .env (password generated on the box, never committed)"
+if [ ! -f .env ]; then
+  cat > .env <<EOF
+POSTGRES_USER=notes
+POSTGRES_PASSWORD=$(openssl rand -hex 24)
+POSTGRES_DB=notes
