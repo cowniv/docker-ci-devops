@@ -41,3 +41,13 @@ if [ ! -f .env ]; then
 POSTGRES_USER=notes
 POSTGRES_PASSWORD=$(openssl rand -hex 24)
 POSTGRES_DB=notes
+LOG_LEVEL=info
+HTTP_PORT=80
+EOF
+  chmod 600 .env
+fi
+
+echo "==> Starting the stack"
+docker compose up -d --build
+
+echo "==> Done. Try: curl http://<public-ip>/health"
