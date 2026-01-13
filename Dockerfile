@@ -15,3 +15,9 @@ WORKDIR /app
 COPY --from=deps --chown=node:node /app/node_modules ./node_modules
 COPY --chown=node:node package.json ./
 COPY --chown=node:node src ./src
+COPY --chown=node:node db ./db
+USER node
+
+EXPOSE 4000
+
+# uses Node's fetch so we don't need curl in the image
