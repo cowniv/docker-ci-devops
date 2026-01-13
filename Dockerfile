@@ -10,3 +10,8 @@ FROM node:22-alpine AS runtime
 ENV NODE_ENV=production \
     PORT=4000
 WORKDIR /app
+
+# run as the built-in unprivileged "node" user, never root
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --chown=node:node package.json ./
+COPY --chown=node:node src ./src
