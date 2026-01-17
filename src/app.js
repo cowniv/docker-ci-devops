@@ -51,3 +51,29 @@ export function createApp(store, { logger = createLogger({ level: "silent" }), c
       if (q) {
         const needle = String(q).toLowerCase();
         notes = notes.filter((n) => (n.title + " " + n.content).toLowerCase().includes(needle));
+      }
+      if (tag) notes = notes.filter((n) => n.tags.includes(String(tag).toLowerCase()));
+
+      const key = sort === "created" ? "createdAt" : sort === "title" ? "title" : "updatedAt";
+      notes.sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1; // pinned first
+        return key === "title" ? a.title.localeCompare(b.title) : b[key].localeCompare(a[key]);
+      });
+
+      res.json({ count: notes.length, data: notes });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.get("/notes/:id", async (req, res, next) => {
+    try {
+      const note = await store.get(req.params.id);
+      if (!note) return res.status(404).json({ error: "Note not found" });
+      res.json(note);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.post("/notes", async (req, res, next) => {
