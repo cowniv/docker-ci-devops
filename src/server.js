@@ -8,3 +8,12 @@ const logger = createLogger({ level: config.logLevel, base: { service: "notes-ap
 const store = await createStoreFromConfig(config);
 const app = createApp(store, { logger, corsOrigin: config.corsOrigin });
 
+const server = app.listen(config.port, () => {
+  logger.info("server started", { port: config.port, store: config.storeDriver, env: config.env });
+});
+
+// Graceful shutdown: stop accepting connections, let in-flight requests finish,
+// close the DB pool, then exit. Docker sends SIGTERM on `docker stop`.
+let shuttingDown = false;
+async function shutdown(signal) {
+  if (shuttingDown) return;
