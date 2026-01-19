@@ -8,3 +8,8 @@ export function createLogger({ level = "info", base = {}, write = (line) => proc
   function log(lvl, msg, fields = {}) {
     if (LEVELS[lvl] < min) return;
     const entry = { time: new Date().toISOString(), level: lvl, msg, ...base, ...fields };
+    if (fields.err instanceof Error) {
+      entry.err = { message: fields.err.message, stack: fields.err.stack };
+    }
+    write(JSON.stringify(entry));
+  }
