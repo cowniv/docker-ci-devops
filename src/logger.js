@@ -13,3 +13,8 @@ export function createLogger({ level = "info", base = {}, write = (line) => proc
     }
     write(JSON.stringify(entry));
   }
+
+  return {
+    debug: (msg, f) => log("debug", msg, f),
+    info: (msg, f) => log("info", msg, f),
+    warn: (msg, f) => log("warn", msg, f),
