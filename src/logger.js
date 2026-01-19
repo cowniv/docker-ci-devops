@@ -3,3 +3,8 @@
 const LEVELS = { debug: 10, info: 20, warn: 30, error: 40, silent: 100 };
 
 export function createLogger({ level = "info", base = {}, write = (line) => process.stdout.write(line + "\n") } = {}) {
+  const min = LEVELS[level] ?? LEVELS.info;
+
+  function log(lvl, msg, fields = {}) {
+    if (LEVELS[lvl] < min) return;
+    const entry = { time: new Date().toISOString(), level: lvl, msg, ...base, ...fields };
