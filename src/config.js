@@ -9,3 +9,9 @@ function int(value, fallback) {
 
 export function loadConfig(source = env) {
   const config = {
+    env: source.NODE_ENV || "development",
+    port: int(source.PORT, 4000),
+    logLevel: source.LOG_LEVEL || "info",
+    // "postgres" in production, "json" or "memory" for local dev and tests
+    storeDriver: source.STORE_DRIVER || (source.DATABASE_URL ? "postgres" : "json"),
+    databaseUrl: source.DATABASE_URL || "",
