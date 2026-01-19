@@ -36,3 +36,12 @@ async function shutdown(signal) {
       logger.error("error closing store", { err: closeErr });
       process.exit(1);
     }
+  });
+  server.closeIdleConnections?.();
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("unhandledRejection", (reason) => {
+  logger.error("unhandled rejection", { err: reason instanceof Error ? reason : new Error(String(reason)) });
+});
