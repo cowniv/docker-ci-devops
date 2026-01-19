@@ -103,3 +103,29 @@ export function createApp(store, { logger = createLogger({ level: "silent" }), c
       const ok = await store.remove(req.params.id);
       if (!ok) return res.status(404).json({ error: "Note not found" });
       res.status(204).end();
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.get("/tags", async (_req, res, next) => {
+    try {
+      const counts = {};
+      for (const n of await store.all()) for (const t of n.tags) counts[t] = (counts[t] ?? 0) + 1;
+      res.json(counts);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.use((_req, res) => res.status(404).json({ error: "Route not found" }));
+
+  // central error handler
+  app.use((err, req, res, _next) => {
+    if (err.type === "entity.parse.failed") return res.status(400).json({ error: "Invalid JSON body" });
+    logger.error("unhandled error", { reqId: req.id, err });
+    res.status(500).json({ error: "Something went wrong" });
+  });
+
+  return app;
+}
