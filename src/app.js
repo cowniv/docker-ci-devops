@@ -77,3 +77,29 @@ export function createApp(store, { logger = createLogger({ level: "silent" }), c
   });
 
   app.post("/notes", async (req, res, next) => {
+    try {
+      const { errors, data } = validateNote(req.body ?? {});
+      if (errors.length) return res.status(400).json({ errors });
+      res.status(201).json(await store.create(data));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.patch("/notes/:id", async (req, res, next) => {
+    try {
+      const { errors, data } = validateNote(req.body ?? {}, { partial: true });
+      if (errors.length) return res.status(400).json({ errors });
+      const note = await store.update(req.params.id, data);
+      if (!note) return res.status(404).json({ error: "Note not found" });
+      res.json(note);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.delete("/notes/:id", async (req, res, next) => {
+    try {
+      const ok = await store.remove(req.params.id);
+      if (!ok) return res.status(404).json({ error: "Note not found" });
+      res.status(204).end();
