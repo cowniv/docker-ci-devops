@@ -18,3 +18,7 @@ export function createLogger({ level = "info", base = {}, write = (line) => proc
     debug: (msg, f) => log("debug", msg, f),
     info: (msg, f) => log("info", msg, f),
     warn: (msg, f) => log("warn", msg, f),
+    error: (msg, f) => log("error", msg, f),
+    child: (fields) => createLogger({ level, base: { ...base, ...fields }, write }),
+  };
+}
