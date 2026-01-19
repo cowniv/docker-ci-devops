@@ -4,3 +4,8 @@ const env = process.env;
 
 function int(value, fallback) {
   const n = Number.parseInt(value ?? "", 10);
+  return Number.isNaN(n) ? fallback : n;
+}
+
+export function loadConfig(source = env) {
+  const config = {
