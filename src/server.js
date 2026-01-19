@@ -27,3 +27,12 @@ async function shutdown(signal) {
   force.unref();
 
   server.close(async (err) => {
+    if (err) logger.error("error closing server", { err });
+    try {
+      await store.close?.();
+      logger.info("shutdown complete");
+      process.exit(err ? 1 : 0);
+    } catch (closeErr) {
+      logger.error("error closing store", { err: closeErr });
+      process.exit(1);
+    }
