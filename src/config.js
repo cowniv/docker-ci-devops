@@ -20,3 +20,8 @@ export function loadConfig(source = env) {
     corsOrigin: source.CORS_ORIGIN || "*",
   };
 
+  if (config.storeDriver === "postgres" && !config.databaseUrl) {
+    throw new Error("DATABASE_URL is required when STORE_DRIVER=postgres");
+  }
+  return config;
+}
