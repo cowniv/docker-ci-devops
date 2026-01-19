@@ -15,3 +15,8 @@ export function loadConfig(source = env) {
     // "postgres" in production, "json" or "memory" for local dev and tests
     storeDriver: source.STORE_DRIVER || (source.DATABASE_URL ? "postgres" : "json"),
     databaseUrl: source.DATABASE_URL || "",
+    dataFile: source.DATA_FILE || "data/notes.json",
+    shutdownTimeoutMs: int(source.SHUTDOWN_TIMEOUT_MS, 10_000),
+    corsOrigin: source.CORS_ORIGIN || "*",
+  };
+
