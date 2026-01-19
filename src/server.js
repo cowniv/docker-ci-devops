@@ -17,3 +17,13 @@ const server = app.listen(config.port, () => {
 let shuttingDown = false;
 async function shutdown(signal) {
   if (shuttingDown) return;
+  shuttingDown = true;
+  logger.info("shutdown started", { signal });
+
+  const force = setTimeout(() => {
+    logger.error("shutdown timed out, forcing exit");
+    process.exit(1);
+  }, config.shutdownTimeoutMs);
+  force.unref();
+
+  server.close(async (err) => {
