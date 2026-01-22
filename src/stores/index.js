@@ -6,3 +6,7 @@ import { createMemoryStore } from "./memory-store.js";
 export async function createStoreFromConfig(config) {
   switch (config.storeDriver) {
     case "postgres": {
+      // imported lazily so `pg` is only loaded when actually used
+      const { createPgStore } = await import("./pg-store.js");
+      return createPgStore({ connectionString: config.databaseUrl });
+    }
