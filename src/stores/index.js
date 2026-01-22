@@ -2,3 +2,7 @@
 //   all() · get(id) · create(data) · update(id, data) · remove(id) · ping() · close()
 import { createJsonStore } from "./json-store.js";
 import { createMemoryStore } from "./memory-store.js";
+
+export async function createStoreFromConfig(config) {
+  switch (config.storeDriver) {
+    case "postgres": {
