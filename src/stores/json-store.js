@@ -22,3 +22,14 @@ export function createJsonStore(file) {
   }
 
   return {
+    async all() {
+      return [...(await load())];
+    },
+    async get(id) {
+      return (await load()).find((n) => n.id === id) ?? null;
+    },
+    async create(data) {
+      const notes = await load();
+      const now = new Date().toISOString();
+      const note = { id: randomUUID(), ...data, pinned: data.pinned ?? false, createdAt: now, updatedAt: now };
+      notes.push(note);
