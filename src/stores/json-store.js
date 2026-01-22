@@ -45,3 +45,14 @@ export function createJsonStore(file) {
       return notes[i];
     },
     async remove(id) {
+      const notes = await load();
+      const i = notes.findIndex((n) => n.id === id);
+      if (i === -1) return false;
+      notes.splice(i, 1);
+      await persist();
+      return true;
+    },
+    async ping() {},
+    async close() {},
+  };
+}
