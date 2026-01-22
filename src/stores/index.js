@@ -14,3 +14,7 @@ export async function createStoreFromConfig(config) {
       return createMemoryStore();
     case "json":
       return createJsonStore(config.dataFile);
+    default:
+      throw new Error(`Unknown STORE_DRIVER "${config.storeDriver}"`);
+  }
+}
