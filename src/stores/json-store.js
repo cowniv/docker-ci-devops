@@ -10,3 +10,15 @@ export function createJsonStore(file) {
     if (cache) return cache;
     try {
       cache = JSON.parse(await readFile(file, "utf8"));
+    } catch {
+      cache = [];
+    }
+    return cache;
+  }
+
+  async function persist() {
+    await mkdir(dirname(file), { recursive: true });
+    await writeFile(file, JSON.stringify(cache, null, 2));
+  }
+
+  return {
