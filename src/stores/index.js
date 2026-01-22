@@ -10,3 +10,7 @@ export async function createStoreFromConfig(config) {
       const { createPgStore } = await import("./pg-store.js");
       return createPgStore({ connectionString: config.databaseUrl });
     }
+    case "memory":
+      return createMemoryStore();
+    case "json":
+      return createJsonStore(config.dataFile);
