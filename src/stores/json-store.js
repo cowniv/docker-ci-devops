@@ -33,3 +33,15 @@ export function createJsonStore(file) {
       const now = new Date().toISOString();
       const note = { id: randomUUID(), ...data, pinned: data.pinned ?? false, createdAt: now, updatedAt: now };
       notes.push(note);
+      await persist();
+      return note;
+    },
+    async update(id, data) {
+      const notes = await load();
+      const i = notes.findIndex((n) => n.id === id);
+      if (i === -1) return null;
+      notes[i] = { ...notes[i], ...data, id, updatedAt: new Date().toISOString() };
+      await persist();
+      return notes[i];
+    },
+    async remove(id) {
