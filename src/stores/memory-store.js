@@ -6,3 +6,10 @@ export function createMemoryStore(seed = []) {
   const clone = (n) => (n ? { ...n, tags: [...n.tags] } : null);
 
   return {
+    async all() {
+      return notes.map(clone);
+    },
+    async get(id) {
+      return clone(notes.find((n) => n.id === id));
+    },
+    async create(data) {
