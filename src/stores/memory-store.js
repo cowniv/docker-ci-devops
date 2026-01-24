@@ -13,3 +13,10 @@ export function createMemoryStore(seed = []) {
       return clone(notes.find((n) => n.id === id));
     },
     async create(data) {
+      const now = new Date().toISOString();
+      const note = { id: randomUUID(), content: "", tags: [], ...data, pinned: data.pinned ?? false, createdAt: now, updatedAt: now };
+      notes.push(note);
+      return clone(note);
+    },
+    async update(id, data) {
+      const i = notes.findIndex((n) => n.id === id);
