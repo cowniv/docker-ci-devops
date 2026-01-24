@@ -27,3 +27,10 @@ export function createMemoryStore(seed = []) {
     async remove(id) {
       const i = notes.findIndex((n) => n.id === id);
       if (i === -1) return false;
+      notes.splice(i, 1);
+      return true;
+    },
+    async ping() {},
+    async close() {},
+  };
+}
