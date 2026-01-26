@@ -26,3 +26,10 @@ export function validateNote(body, { partial = false } = {}) {
     out.tags = [];
   }
 
+  if (body.pinned !== undefined) {
+    if (typeof body.pinned !== "boolean") errors.push("pinned must be a boolean");
+    else out.pinned = body.pinned;
+  }
+
+  return { errors, data: out };
+}
