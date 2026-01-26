@@ -20,3 +20,17 @@ export function createMemoryStore(seed = []) {
     },
     async update(id, data) {
       const i = notes.findIndex((n) => n.id === id);
+      if (i === -1) return null;
+      notes[i] = { ...notes[i], ...data, id, updatedAt: new Date().toISOString() };
+      return clone(notes[i]);
+    },
+    async remove(id) {
+      const i = notes.findIndex((n) => n.id === id);
+      if (i === -1) return false;
+      notes.splice(i, 1);
+      return true;
+    },
+    async ping() {},
+    async close() {},
+  };
+}
