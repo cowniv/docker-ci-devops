@@ -14,3 +14,18 @@ before(async () => {
     const { createPgStore } = await import("../src/stores/pg-store.js");
     const client = new pg.Client({ connectionString: process.env.TEST_DATABASE_URL });
     await client.connect();
+    await migrate(client, () => {});
+    await client.query("TRUNCATE notes");
+    await client.end();
+    store = createPgStore({ connectionString: process.env.TEST_DATABASE_URL });
+  } else {
+    store = createMemoryStore();
+  }
+  server = createApp(store).listen(0);
+  base = `http://localhost:${server.address().port}`;
+});
+
+after(async () => {
+  server.close();
+  await store.close();
+});
