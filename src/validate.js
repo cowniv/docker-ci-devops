@@ -19,3 +19,10 @@ export function validateNote(body, { partial = false } = {}) {
   if (body.tags !== undefined) {
     if (!Array.isArray(body.tags) || !body.tags.every((t) => typeof t === "string")) {
       errors.push("tags must be an array of strings");
+    } else {
+      out.tags = [...new Set(body.tags.map((t) => t.trim().toLowerCase()).filter(Boolean))];
+    }
+  } else if (!partial) {
+    out.tags = [];
+  }
+
