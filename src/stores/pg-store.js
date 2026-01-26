@@ -37,3 +37,16 @@ export function createPgStore({ connectionString, pool = new pg.Pool({ connectio
     },
     async update(id, data) {
       if (!UUID_RE.test(id)) return null;
+      // COALESCE keeps the old value when a field wasn't sent (partial update)
+      const { rows } = await pool.query(
+        `UPDATE notes SET
+           title      = COALESCE($2, title),
+           content    = COALESCE($3, content),
+           tags       = COALESCE($4, tags),
+           pinned     = COALESCE($5, pinned),
+           updated_at = now()
+         WHERE id = $1 RETURNING *`,
+        [id, data.title ?? null, data.content ?? null, data.tags ?? null, data.pinned ?? null]
+      );
+      return rows[0] ? toNote(rows[0]) : null;
+    },
