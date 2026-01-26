@@ -24,3 +24,16 @@ export function createPgStore({ connectionString, pool = new pg.Pool({ connectio
     },
     async get(id) {
       if (!UUID_RE.test(id)) return null; // avoid a 500 from an invalid uuid cast
+      const { rows } = await pool.query("SELECT * FROM notes WHERE id = $1", [id]);
+      return rows[0] ? toNote(rows[0]) : null;
+    },
+    async create(data) {
+      const { rows } = await pool.query(
+        `INSERT INTO notes (title, content, tags, pinned)
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [data.title, data.content ?? "", data.tags ?? [], data.pinned ?? false]
+      );
+      return toNote(rows[0]);
+    },
+    async update(id, data) {
+      if (!UUID_RE.test(id)) return null;
