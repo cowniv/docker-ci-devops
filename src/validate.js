@@ -12,3 +12,10 @@ export function validateNote(body, { partial = false } = {}) {
   if (body.content !== undefined) {
     if (typeof body.content !== "string") errors.push("content must be a string");
     else out.content = body.content;
+  } else if (!partial) {
+    out.content = "";
+  }
+
+  if (body.tags !== undefined) {
+    if (!Array.isArray(body.tags) || !body.tags.every((t) => typeof t === "string")) {
+      errors.push("tags must be an array of strings");
