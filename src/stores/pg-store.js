@@ -50,3 +50,16 @@ export function createPgStore({ connectionString, pool = new pg.Pool({ connectio
       );
       return rows[0] ? toNote(rows[0]) : null;
     },
+    async remove(id) {
+      if (!UUID_RE.test(id)) return false;
+      const { rowCount } = await pool.query("DELETE FROM notes WHERE id = $1", [id]);
+      return rowCount > 0;
+    },
+    async ping() {
+      await pool.query("SELECT 1");
+    },
+    async close() {
+      await pool.end();
+    },
+  };
+}
