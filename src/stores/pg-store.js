@@ -11,3 +11,16 @@ function toNote(row) {
     tags: row.tags,
     pinned: row.pinned,
     createdAt: row.created_at.toISOString(),
+    updatedAt: row.updated_at.toISOString(),
+  };
+}
+
+export function createPgStore({ connectionString, pool = new pg.Pool({ connectionString, max: 10 }) }) {
+  return {
+    pool,
+    async all() {
+      const { rows } = await pool.query("SELECT * FROM notes ORDER BY updated_at DESC");
+      return rows.map(toNote);
+    },
+    async get(id) {
+      if (!UUID_RE.test(id)) return null; // avoid a 500 from an invalid uuid cast
