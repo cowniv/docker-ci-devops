@@ -59,3 +59,18 @@ test("creates, reads, updates and deletes a note", async () => {
 test("unknown id returns 404, not 500", async () => {
   assert.equal((await fetch(`${base}/notes/not-a-uuid`)).status, 404);
 });
+
+test("rejects invalid notes", async () => {
+  const res = await fetch(`${base}/notes`, json("POST", { title: "", tags: "nope" }));
+  assert.equal(res.status, 400);
+  assert.equal((await res.json()).errors.length, 2);
+});
+
+test("filters by search and tag, pinned first", async () => {
+  await fetch(`${base}/notes`, json("POST", { title: "Buy groceries", tags: ["home"] }));
+  await fetch(`${base}/notes`, json("POST", { title: "Thesis outline", content: "chapter 1", tags: ["school"], pinned: true }));
+
+  assert.equal((await (await fetch(`${base}/notes?q=chapter`)).json()).count, 1);
+  assert.equal((await (await fetch(`${base}/notes?tag=home`)).json()).data[0].title, "Buy groceries");
+  assert.equal((await (await fetch(`${base}/notes`)).json()).data[0].pinned, true);
+});
