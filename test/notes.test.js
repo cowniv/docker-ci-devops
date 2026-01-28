@@ -29,3 +29,18 @@ after(async () => {
   server.close();
   await store.close();
 });
+
+const json = (method, body) => ({
+  method,
+  headers: { "Content-Type": "application/json" },
+  body: body && JSON.stringify(body),
+});
+
+test("health and readiness", async () => {
+  assert.equal((await fetch(`${base}/health`)).status, 200);
+  assert.equal((await fetch(`${base}/ready`)).status, 200);
+});
+
+test("creates, reads, updates and deletes a note", async () => {
+  const created = await fetch(`${base}/notes`, json("POST", { title: "Study React", tags: ["School", "school"] }));
+  assert.equal(created.status, 201);
