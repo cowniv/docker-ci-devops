@@ -44,3 +44,18 @@ test("health and readiness", async () => {
 test("creates, reads, updates and deletes a note", async () => {
   const created = await fetch(`${base}/notes`, json("POST", { title: "Study React", tags: ["School", "school"] }));
   assert.equal(created.status, 201);
+  assert.ok(created.headers.get("x-request-id"));
+  const note = await created.json();
+  assert.deepEqual(note.tags, ["school"]);
+
+  const patched = await (await fetch(`${base}/notes/${note.id}`, json("PATCH", { pinned: true }))).json();
+  assert.equal(patched.pinned, true);
+  assert.equal(patched.title, "Study React"); // partial update keeps other fields
+
+  assert.equal((await fetch(`${base}/notes/${note.id}`, { method: "DELETE" })).status, 204);
+  assert.equal((await fetch(`${base}/notes/${note.id}`)).status, 404);
+});
+
+test("unknown id returns 404, not 500", async () => {
+  assert.equal((await fetch(`${base}/notes/not-a-uuid`)).status, 404);
+});
