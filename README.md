@@ -13,3 +13,17 @@ I took my Notes API from project 21 and did everything I skipped the first time:
                  │  headers       JSON logs → stdout               ▲              │
                  │                                migrate (runs once on start) ─┘ │
                  └───────────────────────────────────────────────────────────────┘
+  GitHub push ──▶ Actions: lint → tests (memory + postgres service) → docker build
+```
+
+### Features
+- **Swappable stores** behind one interface (`all/get/create/update/remove/ping/close`): PostgreSQL for production, the old JSON file for quick local runs, in-memory for tests
+- **SQL migrations** with a tiny runner that tracks applied files in `schema_migrations`
+- **Environment-based config** (`src/config.js`), fails fast if Postgres is selected without `DATABASE_URL`
+- **Structured JSON logging**, one line per request with a request id (`x-request-id` is passed through from nginx)
+- **Graceful shutdown** on SIGTERM/SIGINT: stop accepting connections, finish in-flight requests, close the DB pool, with a timeout fallback
+- `/health` (liveness) and `/ready` (checks the database)
+- **Multi-stage Dockerfile**: production deps only, runs as the `node` user, built-in `HEALTHCHECK`
+- **docker compose**: postgres + one-shot migrate + api + nginx, started in the right order with health conditions
+- **nginx** reverse proxy with rate limiting, security headers and gzip
+- **GitHub Actions**: lint, tests against in-memory and a Postgres service container, then a Docker build
