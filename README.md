@@ -27,3 +27,18 @@ I took my Notes API from project 21 and did everything I skipped the first time:
 - **docker compose**: postgres + one-shot migrate + api + nginx, started in the right order with health conditions
 - **nginx** reverse proxy with rate limiting, security headers and gzip
 - **GitHub Actions**: lint, tests against in-memory and a Postgres service container, then a Docker build
+- **deploy/**: EC2 user-data bootstrap script and a small Terraform file (t3.micro + security group, SSH locked to your IP, IMDSv2)
+
+### Tech
+Node.js 22 · Express · PostgreSQL 16 (`pg`) · Docker · docker compose · nginx · GitHub Actions · Terraform · AWS EC2 · ESLint
+
+### Run
+Locally without Docker (JSON file store):
+```bash
+npm install
+npm run dev        # http://localhost:4000
+npm test           # in-memory store
+npm run lint
+```
+
+Whole stack with Docker:
