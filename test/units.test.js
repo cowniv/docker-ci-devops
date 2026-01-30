@@ -10,3 +10,9 @@ test("config picks postgres when DATABASE_URL is set", () => {
 });
 
 test("config falls back to the json store", () => {
+  assert.equal(loadConfig({}).storeDriver, "json");
+});
+
+test("config rejects postgres without a url", () => {
+  assert.throws(() => loadConfig({ STORE_DRIVER: "postgres" }), /DATABASE_URL/);
+});
