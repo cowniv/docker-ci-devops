@@ -42,3 +42,17 @@ npm run lint
 ```
 
 Whole stack with Docker:
+```bash
+cp .env.example .env     # change POSTGRES_PASSWORD
+docker compose up -d --build
+curl http://localhost:8080/health
+docker compose logs -f api
+```
+
+Run the tests against a real Postgres:
+```bash
+TEST_DATABASE_URL=postgres://notes:change-me@localhost:5432/notes_test npm test
+```
+
+Deploy to EC2 (see comments in `deploy/`):
+```bash
