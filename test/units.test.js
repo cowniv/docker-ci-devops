@@ -22,3 +22,9 @@ test("logger writes one JSON line and respects level", () => {
   const log = createLogger({ level: "info", base: { service: "t" }, write: (l) => lines.push(l) });
   log.debug("hidden");
   log.child({ reqId: "abc" }).info("hello", { status: 200 });
+  assert.equal(lines.length, 1);
+  const entry = JSON.parse(lines[0]);
+  assert.equal(entry.msg, "hello");
+  assert.equal(entry.service, "t");
+  assert.equal(entry.reqId, "abc");
+});
