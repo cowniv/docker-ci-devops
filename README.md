@@ -56,3 +56,17 @@ TEST_DATABASE_URL=postgres://notes:change-me@localhost:5432/notes_test npm test
 
 Deploy to EC2 (see comments in `deploy/`):
 ```bash
+cd deploy/terraform
+cp terraform.tfvars.example terraform.tfvars
+terraform init && terraform apply
+```
+
+### What I practiced
+- Keeping routes independent of storage so I could swap JSON for Postgres without touching them
+- Writing migrations instead of creating tables by hand
+- Multi-stage Docker builds, non-root containers and healthchecks
+- Why `CMD ["node", ...]` (exec form) matters for SIGTERM and graceful shutdown
+- nginx as a reverse proxy and what `X-Forwarded-For` / `trust proxy` do
+- CI with service containers
+- Infrastructure as code: one `terraform apply` instead of clicking around the console
+- Not committing secrets: `.env.example`, generated passwords on the server
