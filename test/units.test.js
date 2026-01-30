@@ -16,3 +16,9 @@ test("config falls back to the json store", () => {
 test("config rejects postgres without a url", () => {
   assert.throws(() => loadConfig({ STORE_DRIVER: "postgres" }), /DATABASE_URL/);
 });
+
+test("logger writes one JSON line and respects level", () => {
+  const lines = [];
+  const log = createLogger({ level: "info", base: { service: "t" }, write: (l) => lines.push(l) });
+  log.debug("hidden");
+  log.child({ reqId: "abc" }).info("hello", { status: 200 });
